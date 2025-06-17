@@ -1,10 +1,19 @@
-import React from "react";
-export default function signupPage() {
+import { GalleryVerticalEnd } from "lucide-react";
+
+import SignupForm from "@/components/signup-form";
+
+export default function LoginPage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <h1 className="text-4xl font-bold">Welcome to JobGenie!</h1>
-      <p className="mt-4 text-lg">Your AI-powered job search assistant.</p>
-      <p className="mt-4 text-lg">Please sign up to continue.</p>
-    </main>
+    <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
+      <div className="flex w-full max-w-sm flex-col gap-6">
+        <a href="#" className="flex items-center gap-2 self-center font-medium">
+          <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
+            <GalleryVerticalEnd className="size-4" />
+          </div>
+          Job Genie.
+        </a>
+        <SignupForm />
+      </div>
+    </div>
   );
 }
