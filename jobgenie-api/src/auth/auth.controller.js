@@ -19,3 +19,17 @@ export const signup = async (req, res) => {
     .status(201)
     .json({ message: "User created successfully", user: data.user });
 };
+
+export const login = async (req, res) => {
+  const { email, password } = req.body;
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+  if (error) {
+    return res
+      .status(400)
+      .json({ error: error.message || "An error occurred during login" });
+  }
+  res.status(200).json({ message: "Login successful", user: data.user });
+};

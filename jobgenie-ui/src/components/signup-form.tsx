@@ -1,6 +1,7 @@
 "use client";
 import { toast, ToastContainer } from "react-toastify";
-import { supabase } from "@/lib/supabase-client";
+import handleGoogleOAuth from "@/lib/googleAuth";
+
 import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -42,16 +43,7 @@ export default function SignupForm({
     setUser({ email: "", password: "" });
     // Redirect to login page after successful sign up
   };
-  const handleGoogleOAuth = async () => {
-    const { data } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-    });
-    if (data.error) {
-      toast.error(`Google Sign In failed: ${data.error}`);
-    } else {
-      toast.success("Redirecting to Google Sign In...");
-    }
-  };
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>

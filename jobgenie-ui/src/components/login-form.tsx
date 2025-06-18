@@ -1,5 +1,8 @@
+"use client";
 import { cn } from "@/lib/utils";
+import handleGoogleOAuth from "@/lib/googleAuth";
 import { Button } from "@/components/ui/button";
+import { toast, ToastContainer } from "react-toastify";
 import {
   Card,
   CardContent,
@@ -7,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
@@ -15,6 +19,27 @@ export default function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const [user, setUser] = useState({
+    email: "",
+    password: "",
+  });
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e?.preventDefault();
+    const response = await fetch("http://localhost:5000/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: user.email, password: user.password }),
+    });
+    const data = await response.json();
+    if (data.error) {
+      toast.error(
+        data.error ? ` ${data.error}` : "Login  failed. Please try again."
+      );
+    } else {
+      toast.success("login successfull! ");
+    }
+    setUser({ email: "", password: "" });
+  };
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -23,10 +48,14 @@ export default function LoginForm({
           <CardDescription>Login with your Google account</CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={(e) => handleLogin(e)}>
             <div className="grid gap-6">
               <div className="flex flex-col gap-4">
-                <Button variant="outline" className="w-full">
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={handleGoogleOAuth}
+                >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path
                       d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
@@ -45,10 +74,14 @@ export default function LoginForm({
                 <div className="grid gap-3">
                   <Label htmlFor="email">Email</Label>
                   <Input
+                    value={user.email}
                     id="email"
                     type="email"
                     placeholder="m@example.com"
                     required
+                    onChange={(e) =>
+                      setUser({ ...user, email: e.target.value })
+                    }
                   />
                 </div>
                 <div className="grid gap-3">
@@ -61,7 +94,15 @@ export default function LoginForm({
                       Forgot your password?
                     </a>
                   </div>
-                  <Input id="password" type="password" required />
+                  <Input
+                    id="password"
+                    type="password"
+                    required
+                    value={user.password}
+                    onChange={(e) =>
+                      setUser({ ...user, password: e.target.value })
+                    }
+                  />
                 </div>
                 <Button type="submit" className="w-full">
                   Login
@@ -81,6 +122,7 @@ export default function LoginForm({
         By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
         and <a href="#">Privacy Policy</a>.
       </div>
+      <ToastContainer />
     </div>
   );
 }
