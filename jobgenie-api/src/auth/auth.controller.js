@@ -26,10 +26,14 @@ export const login = async (req, res) => {
     email,
     password,
   });
+  console.log(data.session);
   if (error) {
     return res
       .status(400)
       .json({ error: error.message || "An error occurred during login" });
+  }
+  if (data.session) {
+    const { access_token, refresh_token } = data.session;
   }
   res.status(200).json({ message: "Login successful", user: data.user });
 };
